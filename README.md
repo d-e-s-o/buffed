@@ -26,3 +26,5 @@ sample configuration may look like this:
 " Open buffer list in new window by pressing F3.
 nnoremap <F3> :call g:BuffedShowBuffers('enew')<CR>
 ```
+
+[vundle]: https://github.com/VundleVim/Vundle.vim
