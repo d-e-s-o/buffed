@@ -1,6 +1,6 @@
 " buffed.vim
 
-" Copyright (C) 2021 Daniel Mueller <deso@posteo.net>
+" Copyright (C) 2021-2022 Daniel Mueller <deso@posteo.net>
 " SPDX-License-Identifier: GPL-3.0-or-later
 
 " The code is based on `quickBuf`, with a couple of customization.
@@ -14,7 +14,7 @@ function! g:BuffedShowBuffers(winType)
   redir! => bufvar
     " Run the buffer command to and output via redirection to the
     " bufvar variable.
-    silent buffers
+    silent buffers!
   redir END
   " Open in a new window or a new tab for display.
   execute a:winType
