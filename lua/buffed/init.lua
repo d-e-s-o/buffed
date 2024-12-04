@@ -40,27 +40,29 @@ local function ListBuffers()
 end
 
 -- Display a modifiable list of existing buffers.
-function M.BuffedShowBuffers(buf_cmd)
+function M.BuffedShowBuffers()
   local bufs = ListBuffers()
 
-  -- Open in a new window or a new tab for display.
-  vim.api.nvim_command(buf_cmd)
-
-  -- Set the buffer to non-modifiable
-  vim.api.nvim_buf_set_option(0, 'modifiable', true)
-
+  -- Create an immutable scratch buffer that is wiped once hidden. Note
+  -- that because this buffer is created after the `getbufinfo` call
+  -- above, it won't actually show up in the buffer list itself.
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+  vim.api.nvim_buf_set_option(buf, 'modifiable', true)
   -- Paste the buffer list to the new buffer/tab.
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, bufs)
-
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, bufs)
   -- Set the buffer to non-modifiable
-  vim.api.nvim_buf_set_option(0, 'modifiable', false)
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 
   -- Add a mapping to Enter to open the buffer on the current line.
-  vim.api.nvim_buf_set_keymap(0, 'n', '<Enter>', ':lua require("buffed").BuffedOpenBuffer()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_buf_set_keymap(buf, 'n', '<Enter>', ':lua require("buffed").BuffedOpenBuffer()<CR>', {noremap = true, silent = true})
   -- Add a mapping to delete the buffer on the current line.
-  vim.api.nvim_buf_set_keymap(0, 'n', 'd', ':lua require("buffed").BuffedDeleteBuffer()<CR>', {noremap = true, silent = true})
-  -- Add a mapping to quit.
-  vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':bw!<CR>', {noremap = true, silent = true})
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'd', ':lua require("buffed").BuffedDeleteBuffer()<CR>', {noremap = true, silent = true})
+  -- Add a mapping to quit, switching back to the previous buffer (and
+  -- wiping the temporary one in the process).
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':buffer!#<CR>', {noremap = true, silent = true})
+
+  vim.api.nvim_command("silent buffer!" .. buf)
 end
 
 return M
