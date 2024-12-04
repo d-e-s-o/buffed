@@ -3,12 +3,36 @@
 
 local M = {}
 
+-- Retrieve the number of the currently selected buffer.
+local function SelectedBuffer()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  -- NB: It's important to use a synchronous (blocking) API here to make
+  --     sure we have the necessary side effect in the next line.
+  vim.api.nvim_feedkeys('^', 'x', true)
+  local buf = vim.fn.expand('<cword>')
+  -- Restore the previous cursor position.
+  vim.api.nvim_win_set_cursor(0, cursor)
+  return buf
+end
+
 function M.BuffedOpenBuffer()
-  vim.api.nvim_input("^:bw! | buffer!<C-r><C-w><CR>")
+  local b = SelectedBuffer()
+  vim.api.nvim_command('silent buffer! ' .. b)
 end
 
 function M.BuffedDeleteBuffer()
-  vim.api.nvim_input("^:set modifiable | bw!<C-r><C-w> | delete | set nomodifiable<CR>")
+  local buf = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+
+  local b = SelectedBuffer()
+  vim.api.nvim_command('silent bwipeout! ' .. b)
+
+  -- Delete the currently selected line, now that the buffer has been
+  -- wiped out already.
+  local line = cursor[1] - 1
+  vim.api.nvim_buf_set_option(buf, 'modifiable', true)
+  vim.api.nvim_buf_set_lines(buf, line, line + 1, false, {})
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 end
 
 -- Assemble a string roughly resembling the output of `:ls`.
