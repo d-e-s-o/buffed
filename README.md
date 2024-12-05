@@ -1,9 +1,10 @@
 buffed
 ======
 
-**buffed** is a trivial Vim buffer management plugin. Its main purpose
-is to facilitate the deletion of no longer used buffers. It aims to have
-no dependencies other a Vim/Neovim itself.
+**buffed** is a trivial Neovim buffer management plugin. Its main
+purpose is to facilitate the deletion of no longer used buffers, but it
+can also be used to switch buffers. It aims to have no dependencies
+other a Neovim itself.
 
 Installation
 ------------
@@ -20,11 +21,11 @@ call vundle#end()
 Configuration
 -------------
 As is common for plugins, **buffed** exposes its functionality in the
-form of functions. Users should define key bindings to invoke them. A
-sample configuration may look like this:
-```vim
+form of mainly one function, `BuffedShowBuffers`. Users should define a
+key binding to invoke it. A sample Lua configuration may look like this:
+```lua
 " Open buffer list in new window by pressing F3.
-nnoremap <F3> :call g:BuffedShowBuffers('enew')<CR>
+vim.keymap.set('n', '<F3>', ':lua require("buffed").BuffedShowBuffers()<CR>', {noremap = true})
 ```
 
 [vundle]: https://github.com/VundleVim/Vundle.vim
