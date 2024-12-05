@@ -17,7 +17,10 @@ end
 
 function M.BuffedOpenBuffer()
   local b = SelectedBuffer()
-  vim.api.nvim_command('silent buffer! ' .. b)
+  -- Switch back to the alternate buffer first, so that after the
+  -- subsequent switch it is available as alternate, which makes for a
+  -- more intuitive user experience.
+  vim.api.nvim_command('silent buffer!# | buffer! ' .. b)
 end
 
 function M.BuffedDeleteBuffer()
