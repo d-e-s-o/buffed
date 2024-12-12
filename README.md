@@ -4,7 +4,7 @@ buffed
 **buffed** is a trivial Neovim buffer management plugin. Its main
 purpose is to facilitate the deletion of no longer used buffers, but it
 can also be used to switch buffers. It aims to have no dependencies
-other a Neovim itself.
+other than Neovim itself.
 
 Installation
 ------------
@@ -22,9 +22,9 @@ Configuration
 -------------
 As is common for plugins, **buffed** exposes its functionality in the
 form of mainly one function, `BuffedShowBuffers`. Users should define a
-key binding to invoke it. A sample Lua configuration may look like this:
+key binding to invoke it. A sample Lua configuration looks like this:
 ```lua
-" Open buffer list in new window by pressing F3.
+-- Open buffer list in new window by pressing F3.
 vim.keymap.set('n', '<F3>', ':lua require("buffed").BuffedShowBuffers()<CR>', {noremap = true})
 ```
 
