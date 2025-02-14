@@ -1,4 +1,4 @@
--- Copyright (C) 2021-2024 Daniel Mueller <deso@posteo.net>
+-- Copyright (C) 2021-2025 Daniel Mueller <deso@posteo.net>
 -- SPDX-License-Identifier: GPL-3.0-or-later
 
 local M = {}
@@ -20,7 +20,10 @@ function M.BuffedOpenBuffer()
   -- Switch back to the alternate buffer first, so that after the
   -- subsequent switch it is available as alternate, which makes for a
   -- more intuitive user experience.
-  vim.api.nvim_command('silent buffer!# | buffer! ' .. b)
+  -- Note that this buffer could conceivably not exist, so catch any
+  -- errors here.
+  xpcall(function() vim.api.nvim_command('silent buffer!#') end, function(err) end)
+  vim.api.nvim_command('silent buffer! ' .. b)
 end
 
 function M.BuffedDeleteBuffer()
